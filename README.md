@@ -34,7 +34,7 @@ You must also have Firefox installed on your PC. This is because I am using Sele
 
 - If you want the website to smoothly follow your pointer (im not sure why this is not on by default), click one of the search buttons (like 'NPC') and click the search icon for a random item. This will move the pointer temporarly, however, moving in game will set your position back and auto centering will be enabled.
 
-The map should up every 5 secs (+ a few seconds if OCR is having trouble). If you want this amount increased let me know, this is just to limit the CPU usage.
+The map should up every 5 secs (DEFAULT) (+ a few seconds if OCR is having trouble). Amount of time is adjustable now.
 
 # Licensing
 This program is fully open-source under the MIT license. Thanks to Selenium and ITesseract for allowing me to create this application, the licenses for the methods used are in the Licenses folder. 
