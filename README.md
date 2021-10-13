@@ -16,7 +16,7 @@ You must have Java installed on your PC. I am not entirely sure what version is 
 You must also have Firefox installed on your PC. This is because I am using Seleniums firefox drivers.
 
 # What to do
-- Download the .rar from the github page
+- Download the .rar from the [Download Page](https://github.com/llabinator/New-World-MiniMap/releases/tag/Minimap)
 - Extract the .rar
 - To Run with Non-Console mode for the application just open the .jar with "Java(TM) Platform SE Binary"
   - If a firefox window does not pop up in a few seconds, try running in Console mode and check for errors
