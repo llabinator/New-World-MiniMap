@@ -1,8 +1,5 @@
-
 import java.awt.AWTException;
-import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.Toolkit;
@@ -10,37 +7,56 @@ import java.awt.image.BufferedImage;
 import java.awt.image.RescaleOp;
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URL;
+
 import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
+import javax.swing.JOptionPane;
 
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.remote.UnreachableBrowserException;
+
 
 import net.sourceforge.tess4j.ITesseract;
 import net.sourceforge.tess4j.Tesseract;
-import net.sourceforge.tess4j.TesseractException;
 
 public class Main {
 
 	public static void main(String[] args) throws IOException, InterruptedException {
-
+		
+		int period = 5;
+		
+		String test = JOptionPane.showInputDialog(null, "How fast would you like to update the tracker (Default: 5 seconds, just enter a plain number)");
+		try {
+			if(test != null)
+				period = Integer.parseInt(test);
+			
+			System.out.println("Tracker Update Every " + period + " Seconds.");
+		} catch(Exception e) {
+			System.out.println("User entered something else than just a number. Default update timer set.");
+		}
+		
 		try {
 			Robot robot = new Robot();
 			
 			//Finds position of 'Position [...]' text relative to screen size
 			Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-			int x = screenSize.width - 270;
+			int x = screenSize.width - 269;
+			if(screenSize.width > 2600) {
+				x = screenSize.width - 273;
+			} else if(screenSize.width > 2000) {
+				x = screenSize.width - 270;
+			} else if(screenSize.width > 1300) {
+				x = screenSize.width - 265;
+			} else if(screenSize.width > 800) {
+				x = screenSize.width - 262;
+			}
 			int y = 19;
 			int width = 269;
 			int height = 20;
 			
 			boolean loop = true;
-			boolean debug = true;
+			boolean debug = false;
 			
 			if(args.length >= 1)
 				if(args[0].toLowerCase() == "debug")
@@ -116,7 +132,7 @@ public class Main {
 							
 							// Updates the website with new coords
 							driver.get("https://www.newworld-map.com/#/?lat=" + pos[1] + "&lng=" + pos[0]);
-							TimeUnit.SECONDS.sleep(5);
+							TimeUnit.SECONDS.sleep(period);
 						}
 					} else {
 						throw new Exception();
