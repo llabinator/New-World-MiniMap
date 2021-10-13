@@ -21,17 +21,18 @@ You must also have Firefox installed on your PC. This is because I am using Sele
 - To Run with Non-Console mode for the application just open the .jar with "Java(TM) Platform SE Binary"
   - If a firefox window does not pop up in a few seconds, try running in Console mode and check for errors
 
-To Run with Console mode, open cmd and change directory into the un-zipped folder
-  Then type: java -jar Minimap.jar
+- To Run with Console mode, open cmd and change directory into the un-zipped folder
+  - Then type: java -jar Minimap.jar
 
-If errors persist, please contact me at my [discord](https://discord.gg/HxsTVM3wB2)
+- If errors persist, please contact me at my [discord](https://discord.gg/HxsTVM3wB2)
 
-A firefox window should pop up
-  if window just shows 'new tab' continously, move your player around in game to make sure OCR can pick up position
-Otherwise newworld-map.com should pop up with your position.
+- A firefox window should pop up
+  - if window just shows 'new tab' continously, move your player around in game to make sure OCR can pick up position
+- Otherwise newworld-map.com should pop up with your position.
 
-You can zoom in more onto your position in order to display the resources around you more clearly.
-If you want the website to smoothly follow your pointer (im not sure why this is not on by default), click one of the search buttons (like 'NPC') and click the search icon for a random item. This will move the pointer temporarly, however, moving in game will set your position back and auto centering will be enabled.
+- You can zoom in more onto your position in order to display the resources around you more clearly.
+
+- If you want the website to smoothly follow your pointer (im not sure why this is not on by default), click one of the search buttons (like 'NPC') and click the search icon for a random item. This will move the pointer temporarly, however, moving in game will set your position back and auto centering will be enabled.
 
 # Licensing
 This program is fully open-source under the MIT license. Thanks to Selenium and ITesseract for allowing me to create this application, the licenses for the methods used are in the Licenses folder. 
