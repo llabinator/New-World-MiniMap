@@ -19,7 +19,7 @@ You must also have Firefox installed on your PC. This is because I am using Sele
 - Download the .rar from the github page
 - Extract the .rar
 - To Run with Non-Console mode for the application just open the .jar with "Java(TM) Platform SE Binary"
---  If a firefox window does not pop up in a few seconds, try running in Console mode and check for errors
+  - If a firefox window does not pop up in a few seconds, try running in Console mode and check for errors
 
 To Run with Console mode, open cmd and change directory into the un-zipped folder
   Then type: java -jar Minimap.jar
