@@ -1,4 +1,3 @@
-package newW;
 
 import java.awt.AWTException;
 import java.awt.Color;
