@@ -3,6 +3,7 @@ A custom minimap that displays resources all around you while you adventure thro
 
 # Download
 [Download Page](https://github.com/llabinator/New-World-MiniMap/releases/tag/Minimap)
+- Minimap.rar
 
 # The Program
 An enhanced minimap for New World. The application takes screenshots of your Primary Monitor Screen using Optical Character Recognition (OCR) to detect your position on the world map while the 'Show FPS' menu option is enabled. The application DOES NOT interact with the game itself. It DOES NOT inject itself into memory. It DOES NOT read game memory. It DOES NOT contact with the game whatsoever. The program simply takes the information being displayed on your screen. It is no different than recording/streaming your screen, therefore, it applys to the terms and service.
@@ -15,8 +16,8 @@ You must have Java installed on your PC. I am not entirely sure what version is 
 You must also have Firefox installed on your PC. This is because I am using Seleniums firefox drivers.
 
 # What to do
-Download the .zip from the github page
-Extract the .zip
+Download the .rar from the github page
+Extract the .rar
 To Run with Non-Console mode for the application just open the .jar with "Java(TM) Platform SE Binary"
   If a firefox window does not pop up in a few seconds, try running in Console mode and check for errors
 
