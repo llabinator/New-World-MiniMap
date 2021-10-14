@@ -12,7 +12,7 @@ An enhanced minimap for New World. The application takes screenshots of your Pri
 Thanks to the already brilliant website [newworld-map.com](https://newworld-map.com) for there easy to use map and database. This made it easy for the program to open up the website using Selenium and manipulate the website into showing the player position.
 
 # Must Haves
-You must have Java installed on your PC. I am not entirely sure what version is necessary, but most should work.
+You must have Java installed on your PC. Java version 1.8+. 
 You must also have Firefox installed on your PC. This is because I am using Seleniums firefox drivers.
 
 # What to do
