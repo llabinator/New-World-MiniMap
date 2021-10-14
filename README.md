@@ -36,5 +36,7 @@ You must also have Firefox installed on your PC. This is because I am using Sele
 
 The map should up every 5 secs (DEFAULT) (+ a few seconds if OCR is having trouble). Amount of time is adjustable now.
 
+NOTE THIS WARNING IS NORMAL: Warning: Invalid resolution 0 dpi. Using 70 instead. I can't seem to find a way around it not yelling this constantly.
+
 # Licensing
 This program is fully open-source under the MIT license. Thanks to Selenium and ITesseract for allowing me to create this application, the licenses for the methods used are in the Licenses folder. 
