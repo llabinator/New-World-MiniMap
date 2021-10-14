@@ -38,5 +38,10 @@ The map should up every 5 secs (DEFAULT) (+ a few seconds if OCR is having troub
 
 NOTE THIS WARNING IS NORMAL: Warning: Invalid resolution 0 dpi. Using 70 instead. I can't seem to find a way around it not yelling this constantly.
 
+# Calibration
+In the GUI when you run the .jar, You are able to use the sliders in order to find the position in the top right of your screen. Since resolutions effect each the position, and width of the screenshot, I have made it possible to calibrate this process. You want to calibrate it so the position in brackets are only showing. Like this:
+![screenShot](https://user-images.githubusercontent.com/78010038/137380363-a362f094-b83d-4217-b97d-024b10a5ab19.png)
+If there is any sliver of text on the left most side, the OCR will pick that up and the program will not work.
+
 # Licensing
 This program is fully open-source under the MIT license. Thanks to Selenium and ITesseract for allowing me to create this application, the licenses for the methods used are in the Licenses folder. 
