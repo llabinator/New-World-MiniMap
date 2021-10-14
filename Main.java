@@ -1,76 +1,243 @@
-import java.awt.AWTException;
 import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.awt.image.RescaleOp;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
-
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
-import javax.swing.JOptionPane;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSlider;
+import javax.swing.border.EmptyBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
-
 import net.sourceforge.tess4j.ITesseract;
 import net.sourceforge.tess4j.Tesseract;
 
+
 public class Main {
+	
+	// SOME STATIC VARIABLES USED THROUGHOUT
+	static JLabel img = new JLabel();
+	static Robot robot = null;
+	static boolean calibrating = true;
+	static ArrayList<Integer> calibratedValues = new ArrayList<>(4);
+	
+	//Finds position of 'Position [...]' text relative to screen size
+			//	Default Values
+	static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+	static int x = screenSize.width - 268;
+	static int y = 19;
+	static int width = 269;
+	static int height = 20;
+	static int period = 1;
 
 	public static void main(String[] args) throws IOException, InterruptedException {
 		
-		int period = 5;
-		
-		String test = JOptionPane.showInputDialog(null, "How fast would you like to update the tracker (Default: 5 seconds, just enter a plain number)");
-		try {
-			if(test != null)
-				period = Integer.parseInt(test);
-			
-			System.out.println("Tracker Update Every " + period + " Seconds.");
-		} catch(Exception e) {
-			System.out.println("User entered something else than just a number. Default update timer set.");
-		}
-		
-		try {
-			Robot robot = new Robot();
-			
-			//Finds position of 'Position [...]' text relative to screen size
-			Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-			int x = screenSize.width - 269;
+		// LOAD CALIBRATION IF IT EXISTS, OTHERWISE RESULT TO 'DEFAULT' SETTINGS
+		if(loadCalibration()) {
+			x = calibratedValues.get(0);
+			y = calibratedValues.get(1);
+			width = calibratedValues.get(2);
+			height = calibratedValues.get(3);
+		} else {
 			if(screenSize.width > 2600) {
-				x = screenSize.width - 273;
-			} else if(screenSize.width > 2000) {
 				x = screenSize.width - 270;
+			} else if(screenSize.width > 2000) {
+				x = screenSize.width - 268;
 			} else if(screenSize.width > 1300) {
 				x = screenSize.width - 265;
 			} else if(screenSize.width > 800) {
-				x = screenSize.width - 262;
+				x = screenSize.width - 263;
 			}
-			int y = 19;
-			int width = 269;
-			int height = 20;
+		}
+		
+		BufferedImage screenShot;
+		
+		try {
+			// INITIALIZE SCREENSHOTTER
+			robot = new Robot();
+			
+			// START GUI CONFIG
+				// FRAME SETTINGS AND HEADER SETTINGS
+			JFrame frame = new JFrame();
+			
+			frame.setPreferredSize(new Dimension(1000, 1000));
+			frame.setVisible(true);
+			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			frame.setTitle("LLab's NewW Minimap v1.3");
+			BufferedImage logo = ImageIO.read(new URL("https://images.ctfassets.net/j95d1p8hsuun/4N9cVzWDzqiBiCSlxhziuM/831a668b08e28a898e8319f162f5632b/map-for-web-2.png"));
+			frame.setIconImage(logo);
+			
+			JPanel header = new JPanel();
+
+			header.setPreferredSize(new Dimension(920, 100));
+			header.setLayout(new GridLayout(8, 4));
+			header.setBorder(new EmptyBorder(10, 40, 10, 40));
+			
+			// DISPLAY CURRENTLY WHAT IS BEING SCREENSHOTTED
+			JLabel headerTxt = new JLabel("This is what the application is currently screenshotting: ");
+			img = new JLabel();
+			
+			// DISPLAY EXPECTED SCREENSHOT
+			JLabel headerTxtShould = new JLabel("This is what it should look like: ");
+			JLabel imgShould = new JLabel();
+			BufferedImage im = ImageIO.read(new URL("https://raw.githubusercontent.com/llabinator/New-World-MiniMap/main/screenShot.png"));
+			imgShould.setIcon(new ImageIcon(im));
+			
+			// LABELS FOR SLIDERS
+			JLabel startX = new JLabel("Starting X Position: ");
+			JLabel startY = new JLabel("Starting Y Position: ");
+			JLabel widthL = new JLabel("Width of Screenshot: ");
+			JLabel heightL = new JLabel("Height of Screenshot: ");
+			
+			// SUBPANEL WITH PERIOD COMPONENTS
+			JPanel options = new JPanel();
+			JLabel periodL = new JLabel("How fast would you like to update the tracker (In Seconds)?");			
+			JLabel periodL2 = new JLabel("Select an option from the dropdown: ");
+			JComboBox<String> periodChoices = new JComboBox<>(new String[] { "1", "2", "3", "4", "5", "6", "7", "8", "9" });
+			periodChoices.setSelectedIndex(period - 1 );
+			
+			// SLIDER COMPONENTS
+			JSlider xslider = new JSlider(0, screenSize.width, x);
+			JSlider yslider = new JSlider(0, screenSize.height/4, y);
+			JSlider widthslider = new JSlider(0, screenSize.width/4, width);
+			JSlider heightslider = new JSlider(0, screenSize.height/8, height);
+			JSlider[] sliders = { xslider, yslider, widthslider, heightslider };
+			
+			// CALIBRATED BUTTON
+			JButton button = new JButton("Calibrated");
+			
+			// ADD ALL COMPONENTS TO PANEL
+			header.add(headerTxt);
+			header.add(img);
+			header.add(headerTxtShould);
+			header.add(imgShould);
+			header.add(startX);
+			header.add(xslider);
+			header.add(startY);
+			header.add(yslider);
+			header.add(widthL);
+			header.add(widthslider);
+			header.add(heightL);
+			header.add(heightslider);
+			header.add(periodL);
+			header.add(options);
+			options.add(periodL);
+			options.add(periodL2);
+			options.add(periodChoices);
+			header.add(button);
+			
+			//------- SETTINGS FOR SLIDERS -------
+			xslider.setMajorTickSpacing(256);
+			xslider.setMinorTickSpacing(128);
+			xslider.setPaintTicks(true);
+			xslider.setPaintLabels(true);
+			
+			yslider.setMajorTickSpacing(100);
+			yslider.setMinorTickSpacing(50);
+			yslider.setPaintTicks(true);
+			yslider.setPaintLabels(true);
+			
+			widthslider.setMajorTickSpacing(128);
+			widthslider.setMinorTickSpacing(64);
+			widthslider.setPaintTicks(true);
+			widthslider.setPaintLabels(true);
+			
+			heightslider.setMajorTickSpacing(32);
+			heightslider.setMinorTickSpacing(16);
+			heightslider.setPaintTicks(true);
+			heightslider.setPaintLabels(true);
+			//------------------------------------
+			
+			// When value sliders are changes/moved
+				// Update the preview screenshot
+			for(JSlider slider : sliders) {
+				slider.addChangeListener(new ChangeListener() {
+					@Override
+					public void stateChanged(ChangeEvent e) {
+						updateScreenshot(xslider.getValue(), yslider.getValue(), widthslider.getValue(), heightslider.getValue());
+					}
+				});
+			}
+			
+			// When 'Calibrated' button is clicked
+				// Stop update loop and stop displaying GUI
+			button.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					calibrating = false;
+					frame.setVisible(false);
+					
+				}
+			});
+			
+			frame.add(header);
+			frame.pack();
+			
+			while(calibrating) {
+				TimeUnit.MILLISECONDS.sleep(400);
+				updateScreenshot(x, y, width, height);
+			}
+			
+			// Sets period from dropdown menu
+			period = Integer.valueOf((String) periodChoices.getSelectedItem());
+			
+			// Resets the calibration settings if changes were made
+			calibratedValues.clear();
+			calibratedValues.add(x);
+			calibratedValues.add(y);
+			calibratedValues.add(width);
+			calibratedValues.add(height);
+			
+			// Then saves the calibration
+			saveCalibration();
+			
+			//END OF GUI CONFIG
+		
+		} catch(Exception e) {
+			System.out.print("Failed to create Robot object: ");
+			e.printStackTrace();
+			System.out.println("\nContact creator of program @MalBall_");
+			System.exit(1);
+		}
+		
+		try {
 			
 			boolean loop = true;
-			boolean debug = false;
-			
-			if(args.length >= 1)
-				if(args[0].toLowerCase() == "debug")
-					debug = true;
-			
-			
+			boolean debug = true;
+	
 			System.setProperty("webdriver.gecko.driver", "geckodriver.exe");
 			WebDriver driver = new FirefoxDriver();
 			
-
+			//Implement in future?
+			//driver.manage().window().setSize(new org.openqa.selenium.Dimension(500, 500));
+			//driver.manage().window().setPosition(new Point(screenSize.width-500, (screenSize.height / 2) - 250));
+			
 			while (loop) {
 				
-				//BufferedImage screenShot = robot.createScreenCapture(new Rectangle(x, y, width, height));
-				BufferedImage screenShot = robot.createScreenCapture(new Rectangle(x, y, width, height));
+				screenShot = robot.createScreenCapture(new Rectangle(x, y, width, height));
 				RescaleOp rescaleOp = new RescaleOp(0.8f, 0f, null);
 				rescaleOp.filter(screenShot, screenShot);
 				
@@ -79,7 +246,6 @@ public class Main {
 				
 				ITesseract instance = new Tesseract();
 				
-
 				try {
 					
 					//Does OCR on the screenshot
@@ -126,6 +292,9 @@ public class Main {
 					        loop = false;
 					    }
 						
+						//driver.get("https://www.newworld-map.com");
+						
+						
 						// Display Results, and validates the position to an actual existing point
 						System.out.println("Position Recorded: " + pos[0] + " : " + pos[1]);
 						if(pos[1] > 100 && pos[0] > 100 && pos[1] < 15000 && pos[0] < 15000) {
@@ -145,13 +314,51 @@ public class Main {
 
 			}
 
-		} catch (AWTException e) {
-			System.out.print("Failed to create Robot object: ");
+		} catch (Exception e) {
+			System.out.print("Program failed... ");
 			e.printStackTrace();
 			System.out.println("\nContact creator of program @MalBall_");
 		}
 
 	}
+	
+	// UPDATES SCREENSHOT IN STARTING GUI
+	public static void updateScreenshot(int newx, int newy, int newwidth, int newheight) {
+		if(width != 0 || height != 0) {
+			x = newx;
+			y = newy;
+			width = newwidth;
+			height = newheight;
+			img.setIcon(new ImageIcon(robot.createScreenCapture(new Rectangle(x, y, width, height))));
+		}
+	}
+	// ----------------------------------
+	
+	// LOAD AND SAVING CALIBRATION SETTINGS
+	public static boolean loadCalibration() {
+		try {
+			ObjectInputStream ois = new ObjectInputStream(new FileInputStream("calibration.txt"));
+			calibratedValues = (ArrayList<Integer>) ois.readObject();
+			ois.close();
+		} catch(Exception e) {
+			return false;
+		}
+
+		return true;
+	}
+	
+	public static void saveCalibration() {
+		try (
+			FileOutputStream fos = new FileOutputStream("calibration.txt"); 
+		    ObjectOutputStream oos = new ObjectOutputStream(fos)) {
+		    oos.writeObject(calibratedValues);
+		    fos.close();
+		    oos.close();
+		} catch(Exception e) {
+			System.out.println("Error when saving calibration: " + e);	
+		}
+	}
+	//--------------------------------------
 	
 	
 }
