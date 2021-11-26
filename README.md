@@ -48,3 +48,5 @@ If there is any sliver of text on the left most side, the OCR will pick that up 
 
 # Licensing
 This program is fully open-source under the MIT license. Thanks to Selenium and ITesseract for allowing me to create this application, the licenses for the methods used are in the Licenses folder. 
+
+![](https://hit.yhype.me/github/profile?user_id=78010038)
